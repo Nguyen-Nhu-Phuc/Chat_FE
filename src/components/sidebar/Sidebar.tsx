@@ -1,0 +1,44 @@
+import React from 'react'
+import { Box, IconButton } from '@mui/material'
+import { IconMessageCircle } from '@tabler/icons-react'
+import SkeletonAvatar from '@/components/common/Skeleton'
+import { useUserFromCookie, getInitialText } from '@/components/common/useUserFromCookie'
+
+const Sidebar = () => {
+    const user = useUserFromCookie()
+    
+        const initialText = user
+            ? getInitialText(`${user.firstName || ''} ${user.lastName || ''}`)
+            : 'U'
+    return (
+        <>
+            <Box
+                display="flex"
+                gap={3}
+                flexDirection="column"
+                width={64}
+                bgcolor="primary.main"
+                color="white"
+                alignItems="center"
+                py={2}
+            >
+                <SkeletonAvatar
+                    size={40}
+                    variant="circular"
+                    InitialText={initialText}
+                    color="white"
+                    fontSize={16}
+                    fontWeight={600}
+                    styler={{ backgroundColor: '#ff2f2f', cursor: 'pointer' }}
+                    onClickText={() => console.log('Avatar clicked', user)}
+                />
+
+                <IconButton color="inherit" size="large">
+                    <IconMessageCircle stroke={2} size={28} />
+                </IconButton>
+            </Box>
+        </>
+    )
+}
+
+export default Sidebar
