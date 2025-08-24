@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import { decodeJsonEndcoding } from '@/libs/crypto'
 
 // Danh sách các đường dẫn không cần auth
-const publicPaths = ['/login', '/register', '/_next', '/api/public']
+const publicPaths = ['/login', '/register', '/_next', '/api/public', '/zlogo.png']
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
