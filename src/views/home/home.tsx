@@ -2,16 +2,37 @@
 
 import React from 'react'
 import { Box, IconButton, TextField, Select, MenuItem, Typography } from '@mui/material'
-import { IconMessageCircle,  IconAddressBook } from '@tabler/icons-react';
+import { IconMessageCircle, IconAddressBook } from '@tabler/icons-react';
+import SkeletonAvatar from '@/components/common/Skeleton'
+import { useUserFromCookie, getInitialText } from '@/components/common/useUserFromCookie'
 
 const Home: React.FC = () => {
+
+    const user = useUserFromCookie()
+
+    // Lấy chữ cái đầu để hiển thị
+    const initialText = user
+        ? getInitialText(`${user.firstName || ''} ${user.lastName || ''}`)
+        : 'U'
+
     return (
         <div className="h-screen flex bg-white font-sans text-slate-700 overflow-hidden">
             {/* Sidebar Left */}
             <aside className="flex flex-col w-16 bg-blue-700 text-white select-none">
-                <nav className="flex flex-col items-center space-y-6 py-6">
+                <nav className="flex flex-col items-center space-y-6 py-3">
+                    <SkeletonAvatar 
+                        size={40}
+                        variant="circular"
+                        InitialText={initialText}
+                        color="white"
+                        fontSize={16}
+                        fontWeight={600}
+                        styler={{ backgroundColor: "#1e40af", cursor: "pointer" }}
+                        onClickText={() => console.log("Avatar clicked", user)}
+                    />
+
                     <IconButton color="inherit" size="large">
-                        <IconMessageCircle stroke={2} size={28}/>
+                        <IconMessageCircle stroke={2} size={28} />
                     </IconButton>
                 </nav>
             </aside>
