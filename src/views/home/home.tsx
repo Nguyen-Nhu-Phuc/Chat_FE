@@ -22,7 +22,6 @@ import { useUserFromCookie, getInitialText } from '@/components/common/useUserFr
 const Home: React.FC = () => {
     const user = useUserFromCookie()
 
-    // Lấy chữ cái đầu để hiển thị
     const initialText = user
         ? getInitialText(`${user.firstName || ''} ${user.lastName || ''}`)
         : 'U'
@@ -173,6 +172,7 @@ const Home: React.FC = () => {
                             />
                         </ListItem>
                         <Divider />
+
                     </List>
                 </Paper>
 
