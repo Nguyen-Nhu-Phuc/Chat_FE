@@ -109,7 +109,7 @@ const Login = () => {
             <Box
                 component="form"
                 onSubmit={handleSubmit(onSubmit)}
-                className="w-[560px] h-[540px] mb-[50px] bg-white rounded-lg shadow-md p-6"
+                className="w-[580] h-auto mb-[50px] bg-white rounded-lg shadow-md p-6"
             >
                 <Typography variant="h6" className="font-bold text-center mb-6 select-none pb-5">
                     Đăng nhập tài khoản
