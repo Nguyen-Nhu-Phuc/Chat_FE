@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Box, Typography, Button, InputAdornment, IconButton, Grid } from '@mui/material'
+import { Box, Typography, Button, InputAdornment, IconButton, Grid, RadioGroup, FormControlLabel, Radio, FormHelperText, FormLabel } from '@mui/material'
 import Image from 'next/image'
 import CustomTextField from '@/components/mui/TextField'
 import { RegisterApi } from '@/repository/auth/auth'
@@ -174,6 +174,24 @@ const Register = () => {
               name="gender"
               control={control}
               render={({ field }) => (
+                <>
+                  <FormLabel component="legend">Giới tính</FormLabel>
+                  <RadioGroup row {...field}>
+                    <FormControlLabel value="Nam" control={<Radio />} label="Nam" />
+                    <FormControlLabel value="Nữ" control={<Radio />} label="Nữ" />
+                  </RadioGroup>
+                  {errors.gender && (
+                    <FormHelperText error>{errors.gender?.message}</FormHelperText>
+                  )}
+                </>
+              )}
+            />
+          </Grid>
+          {/* <Grid size={{ xs: 12 }}>
+            <Controller
+              name="gender"
+              control={control}
+              render={({ field }) => (
                 <CustomTextField
                   {...field}
                   fullWidth
@@ -184,7 +202,7 @@ const Register = () => {
                 />
               )}
             />
-          </Grid>
+          </Grid> */}
 
           {/* Password */}
           <Grid size={{ xs: 12 }}>

@@ -17,7 +17,6 @@ export const useUserFromCookie = () => {
   }
 }
 
-// utils/stringHelper.ts
 export const getInitialText = (fullName?: string): string => {
   try {
     if (!fullName || fullName.trim() === "") return "";

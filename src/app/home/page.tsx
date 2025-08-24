@@ -6,7 +6,7 @@ import Home from '@/views/home/home'
 
 export const metadata: Metadata = {
   title: 'Home',
-  description: 'Home to your account',
+  description: 'Home Page',
 }
 
 const HomePage = () => {
