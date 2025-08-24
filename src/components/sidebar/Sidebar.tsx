@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, IconButton } from '@mui/material'
-import { IconMessageCircle } from '@tabler/icons-react'
+import { IconMessageCircle, IconAddressBook } from '@tabler/icons-react'
 import SkeletonAvatar from '@/components/common/Skeleton'
 import { useUserFromCookie, getInitialText } from '@/components/common/useUserFromCookie'
 
@@ -35,6 +35,10 @@ const Sidebar = () => {
 
                 <IconButton color="inherit" size="large">
                     <IconMessageCircle stroke={2} size={28} />
+                </IconButton>
+
+                <IconButton color="inherit" size="large">
+                    <IconAddressBook stroke={2} size={28} />
                 </IconButton>
             </Box>
         </>
