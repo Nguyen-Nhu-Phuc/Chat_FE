@@ -8,6 +8,9 @@ import { styled } from '@mui/material/styles'
 import type { TextFieldProps } from '@mui/material/TextField'
 import TextField from '@mui/material/TextField'
 
+// Màu lỗi custom
+const ERROR_COLOR = '#FF4C51'
+
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
   '& .MuiInputLabel-root': {
     transform: 'none',
@@ -17,31 +20,34 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
     position: 'relative',
     fontSize: theme.typography.body2.fontSize,
     marginBottom: theme.spacing(1),
-    color: 'var(--mui-palette-text-primary)',
+    color: theme.palette.text.primary,
+
     '&:not(.Mui-error).MuiFormLabel-colorPrimary.Mui-focused': {
-      color: 'var(--mui-palette-primary-main) !important',
+      color: theme.palette.primary.main,
     },
     '&.Mui-disabled': {
-      color: 'var(--mui-palette-text-disabled)',
+      color: theme.palette.text.disabled,
     },
     '&.Mui-error': {
-      color: 'var(--mui-palette-error-main)',
+      color: ERROR_COLOR,
     },
   },
+
   '& .MuiInputBase-root': {
     backgroundColor: 'transparent !important',
-    border: `1px solid var(--mui-palette-customColors-inputBorder)`,
+    border: `1px solid ${theme.palette.grey[300]}`, // border mặc định
     '&:not(.Mui-focused):not(.Mui-disabled):not(.Mui-error):hover': {
-      borderColor: 'var(--mui-palette-action-active)',
+      borderColor: theme.palette.action.active,
     },
     '&:before, &:after': {
       display: 'none',
     },
+
     '&.MuiInputBase-sizeSmall': {
       borderRadius: theme.shape.borderRadius,
     },
     '&.Mui-error': {
-      borderColor: 'var(--mui-palette-error-main)',
+      borderColor: ERROR_COLOR,
     },
     '&.Mui-focused': {
       borderWidth: 2,
@@ -52,30 +58,30 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
         padding: '6.25px 13px',
       },
       '&:not(.Mui-error).MuiInputBase-colorPrimary': {
-        borderColor: 'var(--mui-palette-primary-main)',
-        boxShadow: 'var(--mui-customShadows-primary-sm)',
+        borderColor: theme.palette.primary.main,
+        boxShadow: theme.shadows[2],
       },
       '&.MuiInputBase-colorSecondary': {
-        borderColor: 'var(--mui-palette-secondary-main)',
+        borderColor: theme.palette.secondary.main,
       },
       '&.MuiInputBase-colorInfo': {
-        borderColor: 'var(--mui-palette-info-main)',
+        borderColor: theme.palette.info.main,
       },
       '&.MuiInputBase-colorSuccess': {
-        borderColor: 'var(--mui-palette-success-main)',
+        borderColor: theme.palette.success.main,
       },
       '&.MuiInputBase-colorWarning': {
-        borderColor: 'var(--mui-palette-warning-main)',
+        borderColor: theme.palette.warning.main,
       },
       '&.MuiInputBase-colorError': {
-        borderColor: 'var(--mui-palette-error-main)',
+        borderColor: ERROR_COLOR,
       },
       '&.Mui-error': {
-        borderColor: 'var(--mui-palette-error-main)',
+        borderColor: ERROR_COLOR,
       },
     },
     '&.Mui-disabled': {
-      backgroundColor: 'var(--mui-palette-action-hover) !important',
+      backgroundColor: theme.palette.action.hover,
     },
   },
 
@@ -155,28 +161,28 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => ({
       },
     },
   },
+
   '& .MuiFormHelperText-root': {
     lineHeight: 1.154,
     margin: theme.spacing(1, 0, 0),
     fontSize: theme.typography.body2.fontSize,
     '&.Mui-error': {
-      color: 'var(--mui-palette-error-main)',
+      color: ERROR_COLOR,
     },
     '&.Mui-disabled': {
-      color: 'var(--mui-palette-text-disabled)',
+      color: theme.palette.text.disabled,
     },
   },
 
   // For Select
   '& .MuiSelect-select.MuiInputBase-inputSizeSmall, & .MuiNativeSelect-select.MuiInputBase-inputSizeSmall':
-    {
-      '& ~ i, & ~ svg': {
-        inlineSize: '1.125rem',
-        blockSize: '1.125rem',
-      },
+  {
+    '& ~ i, & ~ svg': {
+      inlineSize: '1.125rem',
+      blockSize: '1.125rem',
     },
+  },
   '& .MuiSelect-select': {
-    // lineHeight: 1.5,
     minHeight: 'unset !important',
     lineHeight: '1.4375em',
     '&.MuiInputBase-input': {
