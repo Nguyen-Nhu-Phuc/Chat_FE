@@ -108,6 +108,7 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                         display="flex"
                         alignItems="center"
                         justifyContent="space-between"
+                        height={80}
                         sx={{
                             borderRadius: 2,
                             border: '1px solid #eee',

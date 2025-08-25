@@ -73,22 +73,6 @@ const DetailListFriends = () => {
         }
     }
 
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                <CircularProgress />
-            </Box>
-        )
-    }
-
-    if (error) {
-        return (
-            <Box p={2}>
-                <Typography color="error">{error}</Typography>
-            </Box>
-        )
-    }
-
     return (
         <Box display="flex" flexDirection="column" flex={1} bgcolor="grey.100">
             {/* Header */}
@@ -101,13 +85,19 @@ const DetailListFriends = () => {
 
             {/* Tổng số bạn bè */}
             <Box p={2}>
-                <Typography variant="caption" color="text.secondary">
+                <Typography component={'div'} variant="body1" color="text.secondary">
                     Tổng số bạn bè: {friends.length}
                 </Typography>
             </Box>
 
             {/* Danh sách friends */}
             <Box p={2} display="flex" flexDirection="column" gap={2}>
+                {(error) && <Box p={2}>
+                    <Typography variant='h5' className='flex m-auto justify-center items-center' color="error">{'Đang tải dữ liệu...'}</Typography>
+                </Box>}
+                {loading && <Box className='flex m-auto justify-center items-center' >
+                    <CircularProgress />
+                </Box>}
                 {friends.map((friend) => {
                     const initialText = getInitialText(`${friend.firstName} ${friend.lastName}`)
                     const isDeleting = deletingFriendId === friend._id
