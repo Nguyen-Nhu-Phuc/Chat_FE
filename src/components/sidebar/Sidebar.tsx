@@ -3,9 +3,23 @@ import { Box, IconButton } from '@mui/material'
 import { IconMessageCircle, IconAddressBook } from '@tabler/icons-react'
 import SkeletonAvatar from '@/components/common/Skeleton'
 import { useUserFromCookie, getInitialText } from '@/components/common/useUserFromCookie'
+import { useRouter } from 'next/navigation'
 
 const Sidebar = () => {
+    const router = useRouter();
     const user = useUserFromCookie()
+
+    const linkToFriend = () => {
+
+        router.push(`/friend`);
+    }
+
+    const linkToHome = () => {
+
+        router.push(`/home`);
+
+    }
+
 
     const initialText = user
         ? getInitialText(`${user.firstName || ''} ${user.lastName || ''}`)
@@ -37,11 +51,11 @@ const Sidebar = () => {
                 />
 
                 <IconButton color="inherit" size="large">
-                    <IconMessageCircle stroke={2} size={35} />
+                    <IconMessageCircle onClick={() => { linkToHome() }} stroke={2} size={35} />
                 </IconButton>
 
                 <IconButton color="inherit" size="large">
-                    <IconAddressBook stroke={2} size={35} />
+                    <IconAddressBook onClick={() => { linkToFriend() }} stroke={2} size={35} />
                 </IconButton>
             </Box>
         </>
