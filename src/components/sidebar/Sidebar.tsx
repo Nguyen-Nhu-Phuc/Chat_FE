@@ -6,10 +6,11 @@ import { useUserFromCookie, getInitialText } from '@/components/common/useUserFr
 
 const Sidebar = () => {
     const user = useUserFromCookie()
-    
-        const initialText = user
-            ? getInitialText(`${user.firstName || ''} ${user.lastName || ''}`)
-            : 'U'
+
+    const initialText = user
+        ? getInitialText(`${user.firstName || ''} ${user.lastName || ''}`)
+        : 'U'
+
     return (
         <>
             <Box
@@ -31,14 +32,16 @@ const Sidebar = () => {
                     fontWeight={600}
                     styler={{ backgroundColor: '#ff2f2f', cursor: 'pointer' }}
                     onClickText={() => console.log('Avatar clicked', user)}
+                    src={user?.profile?.avatar || undefined} // nếu có avatar thì dùng ảnh
+                    alt={`${user?.firstName || ''} ${user?.lastName || ''}`}
                 />
 
                 <IconButton color="inherit" size="large">
-                    <IconMessageCircle stroke={2} size={28} />
+                    <IconMessageCircle stroke={2} size={35} />
                 </IconButton>
 
                 <IconButton color="inherit" size="large">
-                    <IconAddressBook stroke={2} size={28} />
+                    <IconAddressBook stroke={2} size={35} />
                 </IconButton>
             </Box>
         </>
