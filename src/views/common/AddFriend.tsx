@@ -19,7 +19,9 @@ import { IconX, IconSearch } from '@tabler/icons-react'
 import { findFriendApi } from '@/repository/findFriend/find'
 import CustomTextField from '@/components/mui/TextField'
 import { SkeletonAvatar } from '@/components/common/Skeleton'
-import { getInitialText } from '@/components/common/useUserFromCookie'
+import { getInitialText, useUserFromCookie } from '@/components/common/useUserFromCookie'
+
+import socket from '@/utils/socket'
 
 interface ModalAddFriendProps {
     open: boolean
@@ -30,6 +32,9 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
     const [data, setData] = useState<any>(null)
     const [phone, setPhone] = useState<string>('')
     const [loading, setLoading] = useState(false)
+    const [sending, setSending] = useState(false)
+
+    const currentUserId = useUserFromCookie()?.id
 
     const findFriend = async (): Promise<void> => {
         if (!phone) return
@@ -52,10 +57,39 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
         return () => clearTimeout(delayDebounce)
     }, [phone])
 
+    useEffect(() => {
+        if (!currentUserId) return
+        socket.emit('join', currentUserId)
+
+
+
+        return () => {
+            socket.off('update_accept_friends')
+            socket.off('error_message')
+        }
+    }, [currentUserId])
+
     const initialText = data
         ? getInitialText(`${data.firstName || ''} ${data.lastName || ''}`)
         : 'U'
 
+    // 📩 gửi lời mời
+    const handleSendRequest = () => {
+
+        console.log('📩 Gửi lời mời đến:', data)
+
+        if (!currentUserId || !data?.id) return
+        setSending(true)
+
+        socket.emit('send_friend_request', {
+            fromUserId: currentUserId,
+            toUserId: data.id
+        })
+
+        setTimeout(() => {
+            setSending(false)
+        }, 1000)
+    }
 
     return (
         <Dialog fullWidth maxWidth="xs" open={open} onClose={handleClose}>
@@ -93,13 +127,11 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                     }}
                 />
 
-
                 {loading && (
                     <Box display="flex" justifyContent="center" py={2}>
                         <CircularProgress size={28} />
                     </Box>
                 )}
-
 
                 {!loading && data && (
                     <Box
@@ -117,7 +149,6 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                         }}
                     >
                         <Box display="flex" alignItems="center" gap={2}>
-
                             <SkeletonAvatar
                                 size={40}
                                 variant="circular"
@@ -126,11 +157,9 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                                 fontSize={16}
                                 fontWeight={600}
                                 styler={{ backgroundColor: '#ff2f2f', cursor: 'pointer' }}
-
                                 src={data?.profile?.avatar || undefined}
                                 alt={`${data?.firstName || ''} ${data?.lastName || ''}`}
                             />
-
                             <Box>
                                 <Typography fontWeight={600}>
                                     {data?.firstName} {data?.lastName}
@@ -144,8 +173,10 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                             size="small"
                             variant="contained"
                             sx={{ borderRadius: '9999px', textTransform: 'none' }}
+                            disabled={sending}
+                            onClick={handleSendRequest}
                         >
-                            Kết bạn
+                            {sending ? 'Đang gửi...' : 'Kết bạn'}
                         </Button>
                     </Box>
                 )}
