@@ -92,8 +92,8 @@ const DetailListFriends = () => {
 
             {/* Danh sách friends */}
             <Box p={2} display="flex" flexDirection="column" gap={2}>
-                {(error) && <Box p={2}>
-                    <Typography variant='h5' className='flex m-auto justify-center items-center' color="error">{'Đang tải dữ liệu...'}</Typography>
+                {(friends.length === 0) && <Box p={2}>
+                    <Typography variant='h5' className='flex m-auto justify-center items-center' color="textSecondary">{'Danh sách trống'}</Typography>
                 </Box>}
                 {loading && <Box className='flex m-auto justify-center items-center' >
                     <CircularProgress />
