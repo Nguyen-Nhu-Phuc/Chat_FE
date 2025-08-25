@@ -1,27 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react';
 import {
-    Box,
-    TextField,
-    Typography,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText,
-    Avatar,
-    Divider,
-    Paper,
-    Button,
-} from '@mui/material'
+    Box, Typography, List, ListItemAvatar, Avatar, Paper, ListItemText, ListItemButton
+} from '@mui/material';
 
-import { IconUsers } from '@tabler/icons-react'
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+
+
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import DetailListFriens from '../Chat/DetailListFriens';
+import { ListAwaitAccept } from '../Chat/ListAwaitAccept';
 
 const PanelListFriend = () => {
+    const [active, setActive] = useState<'friends' | 'requests'>('friends');
+
     return (
+
         <>
             <Paper
                 elevation={0}
                 sx={{
-                    // paddingTop: 0,
+                    pt: 0,
                     width: 320,
                     display: 'flex',
                     flexDirection: 'column',
@@ -29,13 +27,16 @@ const PanelListFriend = () => {
                     borderColor: 'divider'
                 }}
             >
-
-                {/* Chat list */}
-                <List sx={{ flex: 1, overflowY: 'auto' }}>
-                    <ListItem component="div" sx={{ cursor: 'pointer', bgcolor: 'action.selected' }}>
+                <List sx={{ flex: 1, overflowY: 'auto', mt: '-8px' }}>
+                    <ListItemButton
+                        selected={active === 'friends'}
+                        onClick={() => setActive('friends')}
+                        sx={{ mb: '10px' }}
+                    >
                         <ListItemAvatar>
-                            <Avatar sx={{ bgcolor: 'primary.light' }} />
-
+                            <Avatar sx={{ bgcolor: 'primary.light' }} >
+                                <PeopleAltIcon />
+                            </Avatar>
                         </ListItemAvatar>
                         <ListItemText
                             primary={
@@ -46,13 +47,37 @@ const PanelListFriend = () => {
                                 </Box>
                             }
                         />
-                    </ListItem>
+                    </ListItemButton>
 
-                    <Divider />
-
+                    <ListItemButton
+                        selected={active === 'requests'}
+                        onClick={() => setActive('requests')}
+                        sx={{ mb: '10px' }}
+                    >
+                        <ListItemAvatar>
+                            <Avatar sx={{ bgcolor: 'primary.light' }}>
+                                <PersonAddIcon />
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={
+                                <Box display="flex" justifyContent="space-between" alignItems="center">
+                                    <Typography variant="body1" fontWeight={600} noWrap>
+                                        Danh sách lời mời kết bạn
+                                    </Typography>
+                                </Box>
+                            }
+                        />
+                    </ListItemButton>
                 </List>
-            </Paper></>
-    )
-}
+            </Paper>
 
-export default PanelListFriend
+            {active === 'friends' && <DetailListFriens />}
+
+            {active === 'requests' && <ListAwaitAccept />}
+        </>
+
+    );
+};
+
+export default PanelListFriend;
