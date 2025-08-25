@@ -8,7 +8,9 @@ export const ListAwaitAccept = () => {
 
     return (
         <Box>
-
+            <h1>
+                ĐỌC CC, TAO ĐANG LÀM
+            </h1>
 
 
         </Box>
