@@ -14,7 +14,6 @@ import { encodeJsonData } from '@/libs/crypto'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { useUserFromCookie } from '@/components/common/useUserFromCookie'
 
 // Schema validation
 const schema = yup.object().shape({
@@ -82,9 +81,7 @@ const Login = () => {
                     setCookie('user', encodedUser, { maxAge: 60 * 60 * 24 })
                 }
 
-
                 router.push('/home')
-
             } else {
                 toast.error('Đăng nhập thất bại!')
             }
