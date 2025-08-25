@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
     Box,
     TextField,
@@ -11,11 +11,22 @@ import {
     Divider,
     Paper,
     Button
+
+
 } from '@mui/material'
 
+import { IconUserPlus } from '@tabler/icons-react';
+import { ModalAddFriend } from '@/views/common/AddFriend';
+
 const Panel = () => {
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     return (
         <>
+            <ModalAddFriend open={open} handleClose={handleClose}></ModalAddFriend>
             <Paper
                 elevation={0}
                 sx={{
@@ -61,6 +72,10 @@ const Panel = () => {
                             )
                         }}
                     />
+                    <Typography onClick={() => { handleOpen() }} title='Thêm bạn bè' component={'div'} padding={2} color='textSecondary' className='cursor-pointer'>
+                        <IconUserPlus stroke={2} />
+                    </Typography>
+
                 </Box>
 
                 {/* Tabs */}
