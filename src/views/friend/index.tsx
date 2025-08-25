@@ -10,7 +10,6 @@ const Friend: React.FC = () => {
     return (
         <>
             <PanelListFriend />
-            <DetailListFriens />
         </>
 
 
