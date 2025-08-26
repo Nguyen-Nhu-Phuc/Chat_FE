@@ -109,5 +109,4 @@ export const SkeletonAvatar: React.FC<SkeletonAvatarInitialTextProps> = ({
   );
 };
 
-// Sử dụng React.memo để tránh re-render không cần thiết
 export default React.memo(SkeletonAvatar);
