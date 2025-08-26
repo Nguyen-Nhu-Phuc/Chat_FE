@@ -17,6 +17,7 @@ import {
 
 import { IconUserPlus } from '@tabler/icons-react';
 import { ModalAddFriend } from '@/views/common/AddFriend';
+import Conversation from '@/components/panel/Conversation';
 
 const Panel = () => {
 
@@ -100,7 +101,7 @@ const Panel = () => {
                 </Box>
 
                 {/* Chat list */}
-                <List sx={{ flex: 1, overflowY: 'auto' }}>
+                {/* <List sx={{ flex: 1, overflowY: 'auto' }}>
                     <ListItem component="div" sx={{ cursor: 'pointer', bgcolor: 'action.selected' }}>
                         <ListItemAvatar>
                             <Avatar sx={{ bgcolor: 'primary.light' }}>
@@ -146,7 +147,9 @@ const Panel = () => {
                     </ListItem>
                     <Divider />
 
-                </List>
+                </List> */}
+
+                <Conversation />
             </Paper></>
     )
 }
