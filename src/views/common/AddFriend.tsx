@@ -45,13 +45,10 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
             let res: any = await findFriendApi(phone)
             setData(res?.request || null)
 
-            try {
-                const resCheck: any = await checkFriendApi(res?.request?.id)
-                if (resCheck?.status) setChecking(resCheck?.status)
-                else setChecking(null)
-            } catch (error) {
-                setChecking(null)
-            }
+
+            const resCheck: any = await checkFriendApi(res?.request?.id)
+            setChecking(resCheck?.status)
+
         } catch (error) {
             setData(null)
         } finally {
@@ -106,6 +103,8 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
 
 
     }
+
+    console.log('checking', checking)
 
     return (
         <Dialog fullWidth maxWidth="xs" open={open} onClose={handleClose}>
@@ -185,23 +184,19 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                                 </Typography>
                             </Box>
                         </Box>
-                        {checking == 2 && <Typography color="text.secondary" variant="body2">
+                        <>
+                            {checking === 0 ? (
 
-                            <Chip color='success' label={'Đây là bạn'}></Chip>
-                        </Typography>}
-                        {checking == 1 && <Typography color="text.secondary" variant="body2">
-                            <Chip label='Bạn bè'></Chip>
+                                <Chip label={sending ? 'Đang gửi...' : 'Kết bạn'} onClick={handleSendRequest} color='primary' />
 
-                        </Typography>}
-                        {checking == 0 && <Button
-                            size="small"
-                            variant="contained"
-                            sx={{ borderRadius: '9999px', textTransform: 'none' }}
-                            disabled={sending}
-                            onClick={handleSendRequest}
-                        >
-                            {sending ? 'Đang gửi...' : 'Kết bạn'}
-                        </Button>}
+                            ) : checking === 1 ? (
+                                <Chip label="Bạn bè" />
+                            ) : checking === 2 ? (
+                                <Chip color="success" label="Đây là bạn" />
+                            ) : null}
+
+                        </>
+
                     </Box>
                 )}
 
@@ -213,6 +208,6 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                     </Box>
                 )}
             </DialogContent>
-        </Dialog>
+        </Dialog >
     )
 }
