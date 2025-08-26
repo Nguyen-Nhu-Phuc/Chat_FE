@@ -16,7 +16,8 @@ import {
   CircularProgress,
 } from '@mui/material'
 import { IconCamera, IconEdit, IconX, IconCheck } from '@tabler/icons-react'
-import { UpdateProfileApi } from '@/repository/auth/auth'  
+import { UpdateProfileApi } from '@/repository/auth/auth'
+import { toast } from 'react-toastify'
 
 interface IUserInfoDialogProps {
   open: boolean
@@ -72,14 +73,19 @@ const UserInfoDialog: React.FC<IUserInfoDialogProps> = ({
         address: formData.address,
         status: formData.status,
       })
+
+      toast.success('Cập nhật thông tin thành công')
       setEditMode(false)
+
       if (onProfileUpdated) onProfileUpdated()
     } catch (error) {
       console.error('Cập nhật profile thất bại:', error)
+      toast.error('Cập nhật thông tin thất bại vui lòng thử lại')
     } finally {
       setLoading(false)
     }
   }
+
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>

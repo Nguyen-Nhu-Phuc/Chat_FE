@@ -8,7 +8,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import DetailListFriens from '../Chat/DetailListFriens';
-import { ListAwaitAccept } from '../Chat/ListAwaitAccept';
+import { FriendRequestList } from '../Chat/ListAwaitAccept';
 
 const PanelListFriend = () => {
     const [active, setActive] = useState<'friends' | 'requests'>('friends');
@@ -74,7 +74,7 @@ const PanelListFriend = () => {
 
             {active === 'friends' && <DetailListFriens />}
 
-            {active === 'requests' && <ListAwaitAccept />}
+            {active === 'requests' && <FriendRequestList />}
         </>
 
     );
