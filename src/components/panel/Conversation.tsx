@@ -1,53 +1,69 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Box, Typography, CircularProgress, IconButton, Menu, MenuItem } from '@mui/material'
-import { AllFriendApi, IFriend } from '@/repository/addFriend/addFriend'
+import { Box, Typography, CircularProgress } from '@mui/material'
 import SkeletonAvatar from '@/components/common/Skeleton'
-import { getInitialText } from '@/components/common/useUserFromCookie'
-import { toast } from 'react-toastify'
+import { getInitialText, useUserFromCookie } from '@/components/common/useUserFromCookie'
+import { listConversations } from '@/repository/list-conversations/list-conversations'
+
+// giả sử bạn có userId của người đăng nhập (ví dụ lấy từ cookie / context)
 
 const Conversation = () => {
-    const [friends, setFriends] = useState<IFriend[]>([])
+
+    const CURRENT_USER_ID = useUserFromCookie();
+    const [conversations, setConversations] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
-    const [deletingFriendId, setDeletingFriendId] = useState<string | null>(null)
 
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-    const open = Boolean(anchorEl)
+    const [lastMessage, setLastMessage] = useState('')
 
-    // Fetch friends
     useEffect(() => {
-        const fetchFriends = async () => {
+        const fetchConversations = async () => {
             try {
                 setLoading(true)
-                const res = await AllFriendApi()
-                if (res?.request?.friends) setFriends(res.request.friends)
+                const res: any = await listConversations()
+                if (Array.isArray(res.request)) {
+                    setConversations(res.request)
+                } else {
+                    console.error('Unexpected response format:', res)
+                    setError('Dữ liệu không hợp lệ')
+                }
             } catch (err) {
                 console.error(err)
-                setError('Không thể tải danh sách bạn bè')
+                setError('Không thể tải danh sách cuộc trò chuyện')
             } finally {
                 setLoading(false)
             }
         }
-        fetchFriends()
+        fetchConversations()
     }, [])
 
     return (
         <Box>
             <Box display="flex" flexDirection="column" gap={2}>
-                {(friends.length === 0) && <Box p={2}>
-                    <Typography variant='h5' className='flex m-auto justify-center items-center' color="textSecondary">{'Danh sách trống'}</Typography>
-                </Box>}
-                {loading && <Box className='flex m-auto justify-center items-center' >
-                    <CircularProgress />
-                </Box>}
-                {friends.map((friend) => {
-                    const initialText = getInitialText(`${friend.firstName} ${friend.lastName}`)
-                    const isDeleting = deletingFriendId === friend._id
+                {(!loading && conversations.length === 0) && (
+                    <Box p={2}>
+                        <Typography variant='h5' className='flex m-auto justify-center items-center' color="textSecondary">
+                            Danh sách trống
+                        </Typography>
+                    </Box>
+                )}
+
+                {loading && (
+                    <Box className='flex m-auto justify-center items-center'>
+                        <CircularProgress />
+                    </Box>
+                )}
+
+                {conversations.map((conv: any) => {
+                    const otherUser = conv.participants.find((p: any) => p._id !== CURRENT_USER_ID.id)
+                    if (!otherUser) return null
+
+                    const initialText = getInitialText(`${otherUser.firstName} ${otherUser.lastName}`)
+
                     return (
                         <Box
-                            key={friend._id}
+                            key={conv._id}
                             display="flex"
                             alignItems="center"
                             gap={2}
@@ -55,7 +71,6 @@ const Conversation = () => {
                             p={2}
                             borderRadius={1}
                             boxShadow={1}
-                            sx={{ opacity: isDeleting ? 0.5 : 1 }}
                         >
                             <SkeletonAvatar
                                 size={40}
@@ -65,16 +80,17 @@ const Conversation = () => {
                                 fontSize={16}
                                 fontWeight={600}
                                 styler={{ backgroundColor: '#9c27b0', cursor: 'pointer' }}
-                                src={friend?.profile?.avatar || undefined}
-                                alt={`${friend.firstName} ${friend.lastName}`}
-                                onClickText={() => console.log('Friend clicked:', friend)}
+                                src={otherUser?.profile?.avatar || undefined}
+                                alt={`${otherUser.firstName} ${otherUser.lastName}`}
+                                onClickText={() => console.log('Conversation clicked:', conv._id)}
                             />
                             <Box flex={1}>
                                 <Typography fontWeight={500}>
-                                    {friend.firstName} {friend.lastName}
+                                    {otherUser.firstName} {otherUser.lastName}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    {friend.phone}
+                                    {/* {otherUser.phone} */}
+                                    {'Bạn bè'}
                                 </Typography>
                             </Box>
                         </Box>
@@ -82,7 +98,6 @@ const Conversation = () => {
                 })}
             </Box>
         </Box>
-
     )
 }
 
