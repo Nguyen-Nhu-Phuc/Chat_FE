@@ -12,11 +12,12 @@ import {
     Button,
     Box,
     Typography,
-    CircularProgress
+    CircularProgress,
+    Chip
 } from '@mui/material'
 import { IconX, IconSearch } from '@tabler/icons-react'
 
-import { findFriendApi } from '@/repository/findFriend/find'
+import { findFriendApi, checkFriendApi } from '@/repository/findFriend/find'
 import CustomTextField from '@/components/mui/TextField'
 import { SkeletonAvatar } from '@/components/common/Skeleton'
 import { getInitialText, useUserFromCookie } from '@/components/common/useUserFromCookie'
@@ -33,6 +34,7 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
     const [phone, setPhone] = useState<string>('')
     const [loading, setLoading] = useState(false)
     const [sending, setSending] = useState(false)
+    const [checking, setChecking] = useState(null)
 
     const currentUserId = useUserFromCookie()?.id
 
@@ -40,8 +42,16 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
         if (!phone) return
         try {
             setLoading(true)
-            const res: any = await findFriendApi(phone)
+            let res: any = await findFriendApi(phone)
             setData(res?.request || null)
+
+            try {
+                const resCheck: any = await checkFriendApi(res?.request?.id)
+                if (resCheck?.status) setChecking(resCheck?.status)
+                else setChecking(null)
+            } catch (error) {
+                setChecking(null)
+            }
         } catch (error) {
             setData(null)
         } finally {
@@ -74,21 +84,27 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
         : 'U'
 
     // 📩 gửi lời mời
-    const handleSendRequest = () => {
+    const handleSendRequest = async () => {
 
-        console.log('📩 Gửi lời mời đến:', data)
+        try {
+            if (!currentUserId || !data?.id) return
+            setSending(true)
 
-        if (!currentUserId || !data?.id) return
-        setSending(true)
+            socket.emit('send_friend_request', {
+                fromUserId: currentUserId,
+                toUserId: data.id
+            })
 
-        socket.emit('send_friend_request', {
-            fromUserId: currentUserId,
-            toUserId: data.id
-        })
-
-        setTimeout(() => {
+            setTimeout(() => {
+                setSending(false)
+            }, 1000)
+        }
+        catch (error) {
+            console.error('Error sending friend request:', error)
             setSending(false)
-        }, 1000)
+        }
+
+
     }
 
     return (
@@ -169,7 +185,15 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                                 </Typography>
                             </Box>
                         </Box>
-                        <Button
+                        {checking == 2 && <Typography color="text.secondary" variant="body2">
+
+                            <Chip color='success' label={'Đây là bạn'}></Chip>
+                        </Typography>}
+                        {checking == 1 && <Typography color="text.secondary" variant="body2">
+                            <Chip label='Bạn bè'></Chip>
+
+                        </Typography>}
+                        {checking == 0 && <Button
                             size="small"
                             variant="contained"
                             sx={{ borderRadius: '9999px', textTransform: 'none' }}
@@ -177,7 +201,7 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                             onClick={handleSendRequest}
                         >
                             {sending ? 'Đang gửi...' : 'Kết bạn'}
-                        </Button>
+                        </Button>}
                     </Box>
                 )}
 
