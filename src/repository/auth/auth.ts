@@ -1,4 +1,4 @@
-// import { getCookie } from 'cookies-next';
+import { getCookie } from 'cookies-next';
 
 // import { decodeToken } from '@/libs/crypto';
 import api from '../index'
@@ -48,3 +48,40 @@ export const LoginApi = async ({ phone, password }: ILogin) => {
   return response
 }
 
+interface IUpdateProfile {
+  user: string
+  bio?: string
+  address?: string
+  status?: string
+}
+
+export const UpdateProfileApi = async ({ user, bio, address, status }: IUpdateProfile) => {
+  try {
+    const token = getCookie('accessToken')
+
+    if (!token) {
+      throw new Error('Token không tồn tại, vui lòng đăng nhập lại')
+    }
+
+    if (!user) throw new Error('User ID là bắt buộc')
+
+    const body = {
+      user,
+      bio: bio || '',
+      address: address || '',
+      status: status || '',
+    }
+
+    const response = await api.patch(`/api/users/profile`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    return response.data
+  } catch (error) {
+    console.error('Error updating profile:', error)
+    throw error
+  }
+}

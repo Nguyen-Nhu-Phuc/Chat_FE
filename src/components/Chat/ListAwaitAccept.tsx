@@ -92,7 +92,7 @@ export const FriendRequestList = () => {
                             <Stack direction="row" spacing={2} alignItems="center">
                                 <Avatar
                                     src={
-                                        req.from.profile.avatar ||
+                                        req?.from?.profile?.avatar ||
                                         `https://ui-avatars.com/api/?name=${req.from.firstName}+${req.from.lastName}`
                                     }
                                     alt={req.from.firstName}
