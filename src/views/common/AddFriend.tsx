@@ -23,6 +23,7 @@ import { SkeletonAvatar } from '@/components/common/Skeleton'
 import { getInitialText, useUserFromCookie } from '@/components/common/useUserFromCookie'
 
 import socket from '@/utils/socket'
+import { toast } from 'react-toastify'
 
 interface ModalAddFriendProps {
     open: boolean
@@ -95,6 +96,11 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
             setTimeout(() => {
                 setSending(false)
             }, 1000)
+
+            toast.success('Đã gửi lời mời kết bạn!')
+
+            setPhone('')
+            setData(null)
         }
         catch (error) {
             console.error('Error sending friend request:', error)
@@ -104,7 +110,6 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
 
     }
 
-    console.log('checking', checking)
 
     return (
         <Dialog fullWidth maxWidth="xs" open={open} onClose={handleClose}>
@@ -135,7 +140,7 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                     onChange={(e) => setPhone(e.target.value)}
                     InputProps={{
                         endAdornment: (
-                            <IconButton onClick={findFriend}>
+                            <IconButton onClick={() => { findFriend(), setPhone('') }}>
                                 <IconSearch />
                             </IconButton>
                         )
@@ -193,7 +198,7 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
                                 <Chip label="Bạn bè" />
                             ) : checking === 2 ? (
                                 <Chip color="success" label="Đây là bạn" />
-                            ) : null}
+                            ) : <Chip color="warning" label="Đang chờ phản hồi" />}
 
                         </>
 
