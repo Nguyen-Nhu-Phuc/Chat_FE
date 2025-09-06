@@ -39,6 +39,12 @@ type LoginResponse = {
             phone: string
             gender: string
             dob: string
+            profile: {
+                avatar: string
+                address: string
+                bio: string
+                status: string
+            }
         }
     }
 }

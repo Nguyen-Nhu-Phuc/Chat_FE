@@ -17,9 +17,15 @@ import {
 
 import { IconUserPlus } from '@tabler/icons-react';
 import { ModalAddFriend } from '@/views/common/AddFriend';
-import Conversation from '@/components/panel/Conversation';
+import Conversation from '@/components/panel/Conversation'
+import { GetMessagesApi } from '@/repository/addFriend/addFriend';
 
-const Panel = () => {
+
+interface PanelProps {
+  onSelectConversation: (convId: string) => void
+}
+
+const Panel = ({ onSelectConversation }: PanelProps) => {
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
@@ -27,8 +33,8 @@ const Panel = () => {
 
     return (
         <>
-            <ModalAddFriend open={open} handleClose={handleClose}></ModalAddFriend>
-            <Paper
+            <ModalAddFriend open={open} handleClose={() => setOpen(false)} />
+            <Paper className='panel'
                 elevation={0}
                 sx={{
                     width: 320,
@@ -149,8 +155,9 @@ const Panel = () => {
 
                 </List> */}
 
-                <Conversation />
-            </Paper></>
+                <Conversation onSelectConversation={onSelectConversation} />
+            </Paper>
+        </>
     )
 }
 

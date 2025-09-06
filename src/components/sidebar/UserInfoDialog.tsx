@@ -49,6 +49,7 @@ const UserInfoDialog: React.FC<IUserInfoDialogProps> = ({
   onUpdateAvatar,
   onProfileUpdated,
 }) => {
+  // console.log(user);
   const fullName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim()
 
   const [editMode, setEditMode] = useState(false)
@@ -58,6 +59,9 @@ const UserInfoDialog: React.FC<IUserInfoDialogProps> = ({
     address: user?.profile?.address || '',
     status: user?.profile?.status || '',
   })
+
+  
+  
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
