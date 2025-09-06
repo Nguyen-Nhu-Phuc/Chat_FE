@@ -1,5 +1,4 @@
-import React, { useState, useCallback } from 'react';
-
+import React, { useState, useCallback, useEffect } from 'react';
 import { Skeleton, Typography } from '@mui/material';
 import type { TypographyProps } from '@mui/material/Typography';
 
@@ -20,28 +19,34 @@ interface SkeletonAvatarInitialTextProps {
   variant?: 'circular' | 'rounded' | 'square';
   variantSK?: 'circular' | 'text' | 'rectangular' | 'rounded';
   variantTypography?: TypographyProps['variant'];
-  fontWeight?: any
+  fontWeight?: any;
 }
 
 export const SkeletonAvatar: React.FC<SkeletonAvatarInitialTextProps> = ({
   src,
   alt,
   className,
-  size,
+  size = 40,
   styler,
-  color,
-  InitialText,
-  fontWeight,
-  fontSize,
-  isLoading,
+  color = 'inherit',
+  InitialText = '',
+  fontWeight = 600,
+  fontSize = 16,
+  isLoading = false,
   onClickText,
   onClickAvatar,
-  variant,
+  variant = 'circular',
   variantSK = 'circular',
-  variantTypography
+  variantTypography = 'body1'
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Đảm bảo chỉ render InitialText sau khi client đã mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleImageLoad = useCallback(() => {
     setImageLoaded(true);
@@ -53,59 +58,70 @@ export const SkeletonAvatar: React.FC<SkeletonAvatarInitialTextProps> = ({
     setImageError(true);
   }, []);
 
-  // Hiển thị skeleton trong khi ảnh đang tải
+  // Convert size về number
+  const avatarSize = typeof size === 'string' ? parseInt(size, 10) : size;
+
+  // Nếu đang loading
   if (isLoading) {
     return (
       <Skeleton
-        variant={variantSK as 'circular' | 'text' | 'rectangular' | 'rounded'}
-        width={size}
-        height={size}
+        variant={variantSK}
+        width={avatarSize}
+        height={avatarSize}
         animation="wave"
       />
     );
   }
 
-  // Nếu ảnh có src và không bị lỗi
-  return (
-    <>
-      {src && !imageError ? (
-        <>
-          {!imageLoaded && (
-            <Skeleton
-              variant={variantSK}
-              width={size}
-              height={size}
-              animation="wave"
-            />
-          )}
-          <CustomAvatar
-            variant={variant}
-            onClick={onClickAvatar}
-            className={className}
-            skin="light-static"
-            size={typeof size === "string" ? parseInt(size, 10) : size}
-            style={!imageLoaded ? { display: 'none' } : styler}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-            src={src} // Sử dụng src trực tiếp từ prop
-            alt={alt}
+  // Nếu có ảnh và không lỗi
+  if (src && !imageError) {
+    return (
+      <>
+        {!imageLoaded && (
+          <Skeleton
+            variant={variantSK}
+            width={avatarSize}
+            height={avatarSize}
+            animation="wave"
           />
-        </>
-      ) : (
+        )}
         <CustomAvatar
           variant={variant}
+          onClick={onClickAvatar}
           className={className}
-          size={typeof size === "string" ? parseInt(size, 10) : size}
-          style={styler}
-          onClick={onClickText}
           skin="light-static"
+          size={avatarSize}
+          style={!imageLoaded ? { display: 'none' } : styler}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
+          src={src}
+          alt={alt}
+        />
+      </>
+    );
+  }
+
+  // Avatar với InitialText
+  return (
+    <CustomAvatar
+      variant={variant}
+      className={className}
+      size={avatarSize}
+      style={styler}
+      onClick={onClickText}
+      skin="light-static"
+    >
+      {mounted && (
+        <Typography
+          variant={variantTypography}
+          fontWeight={fontWeight}
+          fontSize={fontSize}
+          color={color}
         >
-          <Typography variant={variantTypography} fontWeight={fontWeight} fontSize={fontSize} color={color}>
-            {InitialText}
-          </Typography>
-        </CustomAvatar>
+          {InitialText}
+        </Typography>
       )}
-    </>
+    </CustomAvatar>
   );
 };
 

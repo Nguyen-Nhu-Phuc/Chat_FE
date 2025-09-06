@@ -5,11 +5,14 @@ import { Box, Typography, CircularProgress } from '@mui/material'
 import SkeletonAvatar from '@/components/common/Skeleton'
 import { getInitialText, useUserFromCookie } from '@/components/common/useUserFromCookie'
 import { listConversations } from '@/repository/list-conversations/list-conversations'
-import { GetMessagesApi, IMessage } from '@/repository/addFriend/addFriend'
 
 // giả sử bạn có userId của người đăng nhập (ví dụ lấy từ cookie / context)
 
-const Conversation = ({ onSelectConversation }: { onSelectConversation: (convId: string) => void }) => {
+const Conversation = ({
+    onSelectConversation,
+}: {
+    onSelectConversation: (convId: string, senderId: string, receiverId: string) => void
+}) => {
 
     const CURRENT_USER_ID = useUserFromCookie();
     const [conversations, setConversations] = useState<any[]>([])
@@ -60,7 +63,9 @@ const Conversation = ({ onSelectConversation }: { onSelectConversation: (convId:
                             borderRadius={1}
                             boxShadow={1}
                             sx={{ cursor: 'pointer', '&:hover': { backgroundColor: '#f0f0f0' } }}
-                            onClick={() => onSelectConversation(conv._id)}
+                            onClick={() => {
+                                onSelectConversation(conv._id, CURRENT_USER_ID.id, otherUser._id);
+                            }}
 
                         >
                             <SkeletonAvatar

@@ -20,12 +20,21 @@ const Home: React.FC = () => {
     const [messages, setMessages] = useState<IMessage[]>([])
     const [loadingMessages, setLoadingMessages] = useState(false)
 
+    const [senderId, setSenderId] = useState<string>('');
+    const [receiverId, setReceiverId] = useState<string>('');
+
     // callback nhận từ Panel
-    const handleSelectConversation = async (convId: string) => {
+    const handleSelectConversation = async (convId: string, sender: string, receiver: string) => {
+        // console.log('Sender:', senderId);
+        // console.log('Receiver:', receiverId);
         if (!convId) return
+        setSenderId(sender);
+        setReceiverId(receiver);
         try {
             setSelectedConvId(convId)
             setLoadingMessages(true)
+
+            // console.log('🔎 Đã chọn cuộc trò chuyện:', convId)
 
             const res = await GetMessagesApi(convId)
             if (res && res.success && Array.isArray(res.messages)) {
@@ -50,6 +59,8 @@ const Home: React.FC = () => {
                     selectedConvId={selectedConvId}
                     selectedMessages={messages}
                     loadingMessages={loadingMessages}
+                    senderId={senderId}
+                    receiverId={receiverId}
                 />
             </Box>
         </>
