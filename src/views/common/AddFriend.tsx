@@ -39,6 +39,8 @@ export const ModalAddFriend = ({ open, handleClose }: ModalAddFriendProps) => {
 
     const currentUserId = useUserFromCookie()?.id
 
+    
+
     const findFriend = async (): Promise<void> => {
         if (!phone) return
         try {
