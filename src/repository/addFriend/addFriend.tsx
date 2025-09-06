@@ -83,3 +83,104 @@ export const DeleteFriendApi = async (myFriend: string): Promise<IDeleteFriendRe
         throw error
     }
 }
+
+// Interface cho 1 tin nhắn
+export interface IMessage {
+  _id: string
+  senderId: string
+  conversationId: string
+  text: string
+  createdAt: string
+  updatedAt?: string
+  content: string
+  sender?: {
+    _id: string
+    firstName: string
+    lastName: string
+    profile?: IProfile
+  }
+}
+
+// Interface response từ API
+export interface IMessageListResponse {
+  success: boolean
+  messages: IMessage[]
+}
+
+// API: Lấy danh sách tin nhắn theo conversationId
+export const GetMessagesApi = async (
+  conversationId: string
+): Promise<IMessageListResponse> => {
+  try {
+    const token = getCookie('accessToken')
+
+    if (!token) {
+      throw new Error('Token không tồn tại, vui lòng đăng nhập lại')
+    }
+
+    if (!conversationId) {
+      throw new Error('conversationId không được rỗng')
+    }
+
+    const response = await api.get<IMessageListResponse>(
+      `/api/chat/${conversationId}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+
+    return response.data
+  } catch (error) {
+    console.error('Error fetching messages:', error)
+    throw error
+  }
+}
+
+// Interface response từ API gửi tin nhắn
+export interface ISendMessageResponse {
+  success: boolean
+  message: string
+  data?: IMessage
+}
+
+// API: Gửi tin nhắn
+export const SendMessageApi = async (
+  receiverId: string,
+  type: string,
+  content: string
+): Promise<ISendMessageResponse> => {
+  try {
+    const token = getCookie('accessToken')
+
+    if (!token) {
+      throw new Error('Token không tồn tại, vui lòng đăng nhập lại')
+    }
+
+    if (!receiverId || !type || !content) {
+      throw new Error('receiverId, type và content không được rỗng')
+    }
+
+    const response = await api.post<ISendMessageResponse>(
+      `/api/chat/send`,
+      {
+        receiverId,
+        type,
+        content,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+
+    return response.data
+  } catch (error) {
+    console.error('Error sending message:', error)
+    throw error
+  }
+}

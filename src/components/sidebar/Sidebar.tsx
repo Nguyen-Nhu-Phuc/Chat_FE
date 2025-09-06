@@ -11,6 +11,10 @@ import UserInfoDialog from '@/components/sidebar/UserInfoDialog'
 const Sidebar = () => {
   const router = useRouter()
   const user = useUserFromCookie()
+  console.log('Sidebar');
+  console.log(user);
+  
+  
   const [openDialog, setOpenDialog] = useState(false)
 
   const linkToFriend = () => {
@@ -44,6 +48,7 @@ const Sidebar = () => {
         color="white"
         alignItems="center"
         py={2}
+        // border={'1px solid #e40ae8'}
       >
         {/* Avatar bấm được */}
         <Box onClick={() => setOpenDialog(true)} sx={{ cursor: 'pointer' }}>
