@@ -54,34 +54,34 @@ export const AllFriendApi = async (): Promise<IFriendListResponse> => {
 }
 
 export interface IDeleteFriendResponse {
-    message: string
-    deletedFriendId?: string
+  message: string
+  deletedFriendId?: string
 }
 
 export const DeleteFriendApi = async (myFriend: string): Promise<IDeleteFriendResponse> => {
-    try {
-        // Lấy token từ cookie
-        const token = getCookie('accessToken')
-        if (!token) {
-            throw new Error('Token không tồn tại, vui lòng đăng nhập lại')
-        }
-
-        const response = await api.post<IDeleteFriendResponse>(
-            '/api/friends/delete-friend',
-            { myFriend }, // body JSON
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        )
-
-        return response.data
-    } catch (error) {
-        console.error('Error deleting friend:', error)
-        throw error
+  try {
+    // Lấy token từ cookie
+    const token = getCookie('accessToken')
+    if (!token) {
+      throw new Error('Token không tồn tại, vui lòng đăng nhập lại')
     }
+
+    const response = await api.post<IDeleteFriendResponse>(
+      '/api/friends/delete-friend',
+      { myFriend }, // body JSON
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+
+    return response.data
+  } catch (error) {
+    console.error('Error deleting friend:', error)
+    throw error
+  }
 }
 
 // Interface cho 1 tin nhắn

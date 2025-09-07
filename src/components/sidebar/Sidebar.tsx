@@ -11,9 +11,9 @@ import UserInfoDialog from '@/components/sidebar/UserInfoDialog'
 const Sidebar = () => {
   const router = useRouter()
   const user = useUserFromCookie()
-  console.log('Sidebar');
-  console.log(user);
-  
+  // console.log('Sidebar');
+  // console.log(user);
+  // 
   
   const [openDialog, setOpenDialog] = useState(false)
 
