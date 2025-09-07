@@ -18,11 +18,10 @@ import {
 import { IconUserPlus } from '@tabler/icons-react';
 import { ModalAddFriend } from '@/views/common/AddFriend';
 import Conversation from '@/components/panel/Conversation'
-import { GetMessagesApi } from '@/repository/addFriend/addFriend';
 
 
-interface PanelProps {
-  onSelectConversation: (convId: string) => void
+export interface PanelProps {
+    onSelectConversation: (convId: string, senderId: string, receiverId: string) => void;
 }
 
 const Panel = ({ onSelectConversation }: PanelProps) => {
@@ -105,56 +104,6 @@ const Panel = ({ onSelectConversation }: PanelProps) => {
                         Khác
                     </Button>
                 </Box>
-
-                {/* Chat list */}
-                {/* <List sx={{ flex: 1, overflowY: 'auto' }}>
-                    <ListItem component="div" sx={{ cursor: 'pointer', bgcolor: 'action.selected' }}>
-                        <ListItemAvatar>
-                            <Avatar sx={{ bgcolor: 'primary.light' }}>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M3 15a4 4 0 014-4h1a5 5 0 0110 0h.1a3.5 3.5 0 01-.6 6.9h-10.5A3.5 3.5 0 013 15z"
-                                    />
-                                </svg>
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                            primary={
-                                <Box display="flex" justifyContent="space-between" alignItems="center">
-                                    <Typography variant="body1" fontWeight={600} noWrap>
-                                        Cloud của tôi
-                                    </Typography>
-                                    <Typography variant="caption" color="text.secondary">
-                                        17 giờ
-                                    </Typography>
-                                </Box>
-                            }
-                            secondary={
-                                <Box display="flex" alignItems="center" gap={0.5}>
-                                    <Typography variant="caption" color="text.secondary">
-                                        Bạn:
-                                    </Typography>
-                                    <Typography variant="caption" color="text.secondary">
-                                        Xin chào bạn!
-                                    </Typography>
-                                </Box>
-                            }
-                        />
-                    </ListItem>
-                    <Divider />
-
-                </List> */}
-
                 <Conversation onSelectConversation={onSelectConversation} />
             </Paper>
         </>
