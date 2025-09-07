@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Box, Typography, CircularProgress, TextField, IconButton } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import { useUserFromCookie } from '@/components/common/useUserFromCookie'
 import { IMessage, SendMessageApi } from '@/repository/addFriend/addFriend'
+import { socket } from '@/socket/socket'
 
 interface ChatProps {
   selectedConvId: string
@@ -12,7 +13,15 @@ interface ChatProps {
   loadingMessages: boolean
   senderId: string
   receiverId: string
-  onMessageSent?: () => void // callback để reload messages nếu cần
+  onMessageSent?: () => void
+}
+
+interface Message {
+  conversationId: string
+  senderId: string
+  receiverId: string
+  content: string
+  type: string
 }
 
 export const Chat = ({
@@ -26,39 +35,60 @@ export const Chat = ({
   const CURRENT_USER_ID = useUserFromCookie()
   const [messageInput, setMessageInput] = useState('')
   const [sending, setSending] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement | null>(null) // 📌 ref cuối danh sách
 
-  // Hàm xử lý gửi tin nhắn
-  // Hàm xử lý gửi tin nhắn
-const handleSend = async () => {
-  try {
-    if (!messageInput.trim()) return
-    if (!receiverId) {
-      console.error('❌ Không tìm thấy ID người nhận')
-      return
-    }
-
-    // Log ID người nhận
-    console.log('📩 Gửi tin nhắn đến receiverId:', receiverId)
-
-    setSending(true)
-
-    // Gọi API gửi tin nhắn
-    const res = await SendMessageApi(receiverId, 'text', messageInput.trim())
-    console.log('✅ Tin nhắn đã gửi:', res)
-
-    setMessageInput('')
-
-    // Reload messages nếu có callback
-    if (onMessageSent) onMessageSent()
-  } catch (error) {
-    console.error('Lỗi khi gửi tin nhắn:', error)
-  } finally {
-    setSending(false)
+  // Hàm tự động scroll
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
-}
 
+  // Hàm xử lý gửi tin nhắn
+  const handleSend = async () => {
+    try {
+      if (!messageInput.trim()) return
+      if (!receiverId) {
+        console.error('❌ Không tìm thấy ID người nhận')
+        return
+      }
 
-  // Sắp xếp tin nhắn theo thời gian tăng dần
+      setSending(true)
+
+      await SendMessageApi(receiverId, 'text', messageInput.trim())
+
+      socket.emit('send_message', {
+        conversationId: selectedConvId,
+        senderId: CURRENT_USER_ID?.id,
+        receiverId,
+        content: messageInput.trim(),
+        type: 'text',
+      })
+
+      setMessageInput('')
+      if (onMessageSent) onMessageSent()
+    } catch (error) {
+      console.error('Lỗi khi gửi tin nhắn:', error)
+    } finally {
+      setSending(false)
+    }
+  }
+
+  // Lắng nghe socket tin nhắn
+  useEffect(() => {
+    socket.on('receive_message', (msg: Message) => {
+      if (msg.conversationId === selectedConvId) {
+        if (onMessageSent) onMessageSent()
+      }
+    })
+    return () => {
+      socket.off('receive_message')
+    }
+  }, [selectedConvId, onMessageSent])
+
+  // Scroll mỗi khi tin nhắn thay đổi
+  useEffect(() => {
+    scrollToBottom()
+  }, [selectedMessages])
+
   const sortedMessages = [...selectedMessages].sort(
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   )
@@ -106,6 +136,7 @@ const handleSend = async () => {
             </Box>
           )
         })}
+        <div ref={messagesEndRef} /> {/* 📌 Điểm đánh dấu cuối */}
       </Box>
 
       {/* Ô nhập tin nhắn */}
